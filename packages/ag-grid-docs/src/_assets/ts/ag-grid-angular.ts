@@ -5,3 +5,4 @@ export * from "../../../../ag-grid-angular/src/baseComponentFactory";
 export * from "../../../../ag-grid-angular/src/ng2ComponentFactory";
 export * from "../../../../ag-grid-angular/src/ng2FrameworkFactory";
 export * from "../../../../ag-grid-angular/src/ng2FrameworkComponentWrapper";
+export * from "../../../../ag-grid-angular/src/ng2CustomComponentWrapper";

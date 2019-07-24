@@ -33,7 +33,7 @@ export type ComponentHolder =
 export type AgComponentPropertyInput<A extends IComponent<any>> = AgGridRegisteredComponentInput<A> | string | boolean;
 
 export enum ComponentType {
-    AG_GRID, FRAMEWORK
+    AG_GRID, FRAMEWORK, CUSTOM
 }
 
 export enum ComponentSource {
@@ -90,6 +90,9 @@ export class ComponentResolver {
     @Optional("frameworkComponentWrapper")
     private frameworkComponentWrapper: FrameworkComponentWrapper;
 
+    @Optional("customComponentWrapper")
+    private customComponentWrapper: FrameworkComponentWrapper;
+
     /**
      * This method returns the underlying representation of the component to be created. ie for Javascript the
      * underlying function where we should be calling new into. In case of the frameworks, the framework class
@@ -125,6 +128,7 @@ export class ComponentResolver {
         let HardcodedJsComponent: { new(): A } = null;
         let hardcodedJsFunction: AgGridComponentFunctionInput = null;
         let HardcodedFwComponent: { new(): B } = null;
+        let HardcodedCustomComponent: { new(): B } = null;
         let dynamicComponentFn: (params: DynamicComponentParams) => DynamicComponentDef;
 
         if (holder != null) {
@@ -144,6 +148,7 @@ export class ComponentResolver {
                 }
             }
             HardcodedFwComponent = (holder as any)[propertyName + "Framework"];
+            HardcodedCustomComponent = (holder as any)[propertyName + "Custom"];
             dynamicComponentFn = (holder as any)[propertyName + "Selector"];
         }
 
@@ -153,9 +158,10 @@ export class ComponentResolver {
          */
 
         if (
-            (HardcodedJsComponent && HardcodedFwComponent) ||
-            (hardcodedNameComponent && HardcodedFwComponent) ||
-            (hardcodedJsFunction && HardcodedFwComponent)
+            (HardcodedJsComponent && (HardcodedFwComponent || HardcodedCustomComponent)) ||
+            (hardcodedNameComponent && (HardcodedFwComponent || HardcodedCustomComponent)) ||
+            (hardcodedJsFunction && (HardcodedFwComponent || HardcodedCustomComponent)) ||
+            (HardcodedFwComponent && HardcodedCustomComponent)
         ) {
             throw Error("ag-grid: you are trying to specify: " + propertyName + " twice as a component.");
         }
@@ -164,7 +170,11 @@ export class ComponentResolver {
             throw Error("ag-grid: you are specifying a framework component but you are not using a framework version of ag-grid for : " + propertyName);
         }
 
-        if (dynamicComponentFn && (hardcodedNameComponent || HardcodedJsComponent || hardcodedJsFunction || HardcodedFwComponent)) {
+        if (HardcodedCustomComponent && !this.customComponentWrapper) {
+            throw Error("ag-grid: you are specifying a custom component but you are not using a framework version of ag-grid for : " + propertyName);
+        }
+
+        if (dynamicComponentFn && (hardcodedNameComponent || HardcodedJsComponent || hardcodedJsFunction || HardcodedFwComponent || HardcodedCustomComponent)) {
             throw Error("ag-grid: you can't specify both, the selector and the component of ag-grid for : " + propertyName);
         }
 
@@ -184,6 +194,17 @@ export class ComponentResolver {
             return {
                 type: ComponentType.FRAMEWORK,
                 component: HardcodedFwComponent,
+                source: ComponentSource.HARDCODED,
+                dynamicParams: null
+            };
+        }
+
+        if (HardcodedCustomComponent) {
+            // console.warn(`ag-grid: Since version 12.1.0 specifying a component directly is deprecated, you should register the component by name`);
+            // console.warn(`${HardcodedFwComponent}`);
+            return {
+                type: ComponentType.CUSTOM,
+                component: HardcodedCustomComponent,
                 source: ComponentSource.HARDCODED,
                 dynamicParams: null
             };
@@ -345,6 +366,7 @@ export class ComponentResolver {
         finalParams.agGridReact = this.context.getBean('agGridReact') ? _.cloneObject(this.context.getBean('agGridReact')) : {};
         // AG-1716 - directly related to AG-1574 and AG-1715
         finalParams.frameworkComponentWrapper = this.context.getBean('frameworkComponentWrapper') ? this.context.getBean('frameworkComponentWrapper') : {};
+        finalParams.customComponentWrapper = this.context.getBean('customComponentWrapper') ? this.context.getBean('customComponentWrapper') : {};
 
         const deferredInit: void | Promise<void> = this.initialiseComponent(componentAndParams[0], finalParams, customInitParamsCb);
         if (deferredInit == null) {
@@ -400,17 +422,37 @@ export class ComponentResolver {
             ];
         }
 
-        //Using framework component
-        const FrameworkComponentRaw: { new(): B } = componentToUse.component;
+        if (componentToUse.type === ComponentType.FRAMEWORK) {
+            //Using framework component
+            const FrameworkComponentRaw: { new(): B } = componentToUse.component;
 
-        const thisComponentConfig: ComponentMetadata = this.componentMetadataProvider.retrieve(propertyName);
-        return [
-            this.frameworkComponentWrapper.wrap(FrameworkComponentRaw,
-                thisComponentConfig.mandatoryMethodList,
-                thisComponentConfig.optionalMethodList,
-                defaultComponentName) as A,
-            componentToUse.dynamicParams
-        ];
+            const thisComponentConfig: ComponentMetadata = this.componentMetadataProvider.retrieve(
+                propertyName);
+            return [
+                this.frameworkComponentWrapper.wrap(FrameworkComponentRaw,
+                                                    thisComponentConfig.mandatoryMethodList,
+                                                    thisComponentConfig.optionalMethodList,
+                                                    defaultComponentName) as A,
+                componentToUse.dynamicParams
+            ];
+        }
+
+        if (componentToUse.type === ComponentType.CUSTOM) {
+            //Using custom component
+            const CustomComponentRaw: { new(): B } = componentToUse.component;
+
+            const thisComponentConfig: ComponentMetadata = this.componentMetadataProvider.retrieve(
+                propertyName);
+            return [
+                this.customComponentWrapper.wrap(CustomComponentRaw,
+                                                 thisComponentConfig.mandatoryMethodList,
+                                                 thisComponentConfig.optionalMethodList,
+                                                 defaultComponentName) as A,
+                componentToUse.dynamicParams
+            ];
+        }
+
+        return null;
     }
 
     private initialiseComponent<A extends IComponent<any>>(component: A,
