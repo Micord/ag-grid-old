@@ -6,3 +6,4 @@ export * from './dist/baseComponentFactory';
 export * from './dist/ng2ComponentFactory';
 export * from './dist/ng2FrameworkFactory';
 export * from './dist/ng2FrameworkComponentWrapper';
+export * from './dist/ng2CustomComponentWrapper';

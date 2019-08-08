@@ -1,6 +1,6 @@
 /**
  * ag-grid-community - Advanced Data Grid / Data Table supporting Javascript / React / AngularJS / Web Components
- * @version v20.0.0
+ * @version v20.0.0-cg
  * @link http://www.ag-grid.com/
  * @license MIT
  */
@@ -25,6 +25,7 @@ var ComponentType;
 (function (ComponentType) {
     ComponentType[ComponentType["AG_GRID"] = 0] = "AG_GRID";
     ComponentType[ComponentType["FRAMEWORK"] = 1] = "FRAMEWORK";
+    ComponentType[ComponentType["CUSTOM"] = 2] = "CUSTOM";
 })(ComponentType = exports.ComponentType || (exports.ComponentType = {}));
 var ComponentSource;
 (function (ComponentSource) {
@@ -65,6 +66,7 @@ var ComponentResolver = /** @class */ (function () {
         var HardcodedJsComponent = null;
         var hardcodedJsFunction = null;
         var HardcodedFwComponent = null;
+        var HardcodedCustomComponent = null;
         var dynamicComponentFn;
         if (holder != null) {
             var componentPropertyValue = holder[propertyName];
@@ -86,21 +88,26 @@ var ComponentResolver = /** @class */ (function () {
                 }
             }
             HardcodedFwComponent = holder[propertyName + "Framework"];
+            HardcodedCustomComponent = holder[propertyName + "Custom"];
             dynamicComponentFn = holder[propertyName + "Selector"];
         }
         /**
          * Since we allow many types of flavors for specifying the components, let's make sure this is not an illegal
          * combination
          */
-        if ((HardcodedJsComponent && HardcodedFwComponent) ||
-            (hardcodedNameComponent && HardcodedFwComponent) ||
-            (hardcodedJsFunction && HardcodedFwComponent)) {
+        if ((HardcodedJsComponent && (HardcodedFwComponent || HardcodedCustomComponent)) ||
+            (hardcodedNameComponent && (HardcodedFwComponent || HardcodedCustomComponent)) ||
+            (hardcodedJsFunction && (HardcodedFwComponent || HardcodedCustomComponent)) ||
+            (HardcodedFwComponent && HardcodedCustomComponent)) {
             throw Error("ag-grid: you are trying to specify: " + propertyName + " twice as a component.");
         }
         if (HardcodedFwComponent && !this.frameworkComponentWrapper) {
             throw Error("ag-grid: you are specifying a framework component but you are not using a framework version of ag-grid for : " + propertyName);
         }
-        if (dynamicComponentFn && (hardcodedNameComponent || HardcodedJsComponent || hardcodedJsFunction || HardcodedFwComponent)) {
+        if (HardcodedCustomComponent && !this.customComponentWrapper) {
+            throw Error("ag-grid: you are specifying a custom component but you are not using a framework version of ag-grid for : " + propertyName);
+        }
+        if (dynamicComponentFn && (hardcodedNameComponent || HardcodedJsComponent || hardcodedJsFunction || HardcodedFwComponent || HardcodedCustomComponent)) {
             throw Error("ag-grid: you can't specify both, the selector and the component of ag-grid for : " + propertyName);
         }
         /**
@@ -119,6 +126,16 @@ var ComponentResolver = /** @class */ (function () {
             return {
                 type: ComponentType.FRAMEWORK,
                 component: HardcodedFwComponent,
+                source: ComponentSource.HARDCODED,
+                dynamicParams: null
+            };
+        }
+        if (HardcodedCustomComponent) {
+            // console.warn(`ag-grid: Since version 12.1.0 specifying a component directly is deprecated, you should register the component by name`);
+            // console.warn(`${HardcodedFwComponent}`);
+            return {
+                type: ComponentType.CUSTOM,
+                component: HardcodedCustomComponent,
                 source: ComponentSource.HARDCODED,
                 dynamicParams: null
             };
@@ -252,6 +269,7 @@ var ComponentResolver = /** @class */ (function () {
         finalParams.agGridReact = this.context.getBean('agGridReact') ? utils_1._.cloneObject(this.context.getBean('agGridReact')) : {};
         // AG-1716 - directly related to AG-1574 and AG-1715
         finalParams.frameworkComponentWrapper = this.context.getBean('frameworkComponentWrapper') ? this.context.getBean('frameworkComponentWrapper') : {};
+        finalParams.customComponentWrapper = this.context.getBean('customComponentWrapper') ? this.context.getBean('customComponentWrapper') : {};
         var deferredInit = this.initialiseComponent(componentAndParams[0], finalParams, customInitParamsCb);
         if (deferredInit == null) {
             return utils_1.Promise.resolve(componentAndParams[0]);
@@ -290,13 +308,25 @@ var ComponentResolver = /** @class */ (function () {
                 componentToUse.dynamicParams
             ];
         }
-        //Using framework component
-        var FrameworkComponentRaw = componentToUse.component;
-        var thisComponentConfig = this.componentMetadataProvider.retrieve(propertyName);
-        return [
-            this.frameworkComponentWrapper.wrap(FrameworkComponentRaw, thisComponentConfig.mandatoryMethodList, thisComponentConfig.optionalMethodList, defaultComponentName),
-            componentToUse.dynamicParams
-        ];
+        if (componentToUse.type === ComponentType.FRAMEWORK) {
+            //Using framework component
+            var FrameworkComponentRaw = componentToUse.component;
+            var thisComponentConfig = this.componentMetadataProvider.retrieve(propertyName);
+            return [
+                this.frameworkComponentWrapper.wrap(FrameworkComponentRaw, thisComponentConfig.mandatoryMethodList, thisComponentConfig.optionalMethodList, defaultComponentName),
+                componentToUse.dynamicParams
+            ];
+        }
+        if (componentToUse.type === ComponentType.CUSTOM) {
+            //Using custom component
+            var CustomComponentRaw = componentToUse.component;
+            var thisComponentConfig = this.componentMetadataProvider.retrieve(propertyName);
+            return [
+                this.customComponentWrapper.wrap(CustomComponentRaw, thisComponentConfig.mandatoryMethodList, thisComponentConfig.optionalMethodList, defaultComponentName),
+                componentToUse.dynamicParams
+            ];
+        }
+        return null;
     };
     ComponentResolver.prototype.initialiseComponent = function (component, agGridParams, customInitParamsCb) {
         this.context.wireBean(component);
@@ -338,6 +368,10 @@ var ComponentResolver = /** @class */ (function () {
         context_1.Optional("frameworkComponentWrapper"),
         __metadata("design:type", Object)
     ], ComponentResolver.prototype, "frameworkComponentWrapper", void 0);
+    __decorate([
+        context_1.Optional("customComponentWrapper"),
+        __metadata("design:type", Object)
+    ], ComponentResolver.prototype, "customComponentWrapper", void 0);
     ComponentResolver = __decorate([
         context_1.Bean('componentResolver')
     ], ComponentResolver);

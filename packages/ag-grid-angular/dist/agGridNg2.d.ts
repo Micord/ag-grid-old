@@ -3,10 +3,12 @@ import { ColumnApi, GridApi, GridOptions } from "ag-grid-community";
 import { Ng2FrameworkFactory } from "./ng2FrameworkFactory";
 import { AgGridColumn } from "./agGridColumn";
 import { Ng2FrameworkComponentWrapper } from "./ng2FrameworkComponentWrapper";
+import { Ng2CustomComponentWrapper } from "./ng2CustomComponentWrapper";
 export declare class AgGridNg2 implements AfterViewInit {
     private viewContainerRef;
     private ng2FrameworkFactory;
     private frameworkComponentWrapper;
+    private customComponentWrapper;
     private _componentFactoryResolver;
     private _nativeElement;
     private _initialised;
@@ -16,7 +18,7 @@ export declare class AgGridNg2 implements AfterViewInit {
     api: GridApi;
     columnApi: ColumnApi;
     columns: QueryList<AgGridColumn>;
-    constructor(elementDef: ElementRef, viewContainerRef: ViewContainerRef, ng2FrameworkFactory: Ng2FrameworkFactory, frameworkComponentWrapper: Ng2FrameworkComponentWrapper, _componentFactoryResolver: ComponentFactoryResolver);
+    constructor(elementDef: ElementRef, viewContainerRef: ViewContainerRef, ng2FrameworkFactory: Ng2FrameworkFactory, frameworkComponentWrapper: Ng2FrameworkComponentWrapper, customComponentWrapper: Ng2CustomComponentWrapper, _componentFactoryResolver: ComponentFactoryResolver);
     ngAfterViewInit(): void;
     ngOnChanges(changes: any): void;
     ngOnDestroy(): void;
@@ -51,6 +53,7 @@ export declare class AgGridNg2 implements AfterViewInit {
     rowClassRules: any;
     detailGridOptions: any;
     detailCellRendererParams: any;
+    loadingCellRendererParams: any;
     loadingOverlayComponentParams: any;
     noRowsOverlayComponentParams: any;
     popupParent: any;
@@ -136,6 +139,8 @@ export declare class AgGridNg2 implements AfterViewInit {
     postProcessPopup: any;
     getChildCount: any;
     getDataPath: any;
+    loadingCellRenderer: any;
+    loadingCellRendererFramework: any;
     loadingOverlayComponent: any;
     loadingOverlayComponentFramework: any;
     noRowsOverlayComponent: any;
@@ -152,6 +157,7 @@ export declare class AgGridNg2 implements AfterViewInit {
     processDataFromClipboard: any;
     getServerSideGroupKey: any;
     isServerSideGroup: any;
+    suppressKeyboardEvent: any;
     toolPanelSuppressRowGroups: any;
     toolPanelSuppressValues: any;
     toolPanelSuppressPivots: any;
@@ -165,6 +171,7 @@ export declare class AgGridNg2 implements AfterViewInit {
     suppressCellSelection: any;
     suppressHorizontalScroll: any;
     debug: any;
+    enableBrowserTooltips: any;
     enableColResize: any;
     enableCellExpressions: any;
     enableSorting: any;
@@ -229,6 +236,7 @@ export declare class AgGridNg2 implements AfterViewInit {
     suppressRowDrag: any;
     enableGroupEdit: any;
     embedFullWidthRows: any;
+    deprecatedEmbedFullWidthRows: any;
     suppressTabbing: any;
     suppressPaginationPanel: any;
     floatingFilter: any;
@@ -269,6 +277,12 @@ export declare class AgGridNg2 implements AfterViewInit {
     reactNext: any;
     suppressSetColumnStateEvents: any;
     enableCharts: any;
+    deltaColumnMode: any;
+    suppressMaintainUnsortedOrder: any;
+    enableCellTextSelection: any;
+    suppressBrowserResizeObserver: any;
+    suppressMaxRenderedRowRestriction: any;
+    excludeChildrenWhenTreeDataFiltering: any;
     columnEverythingChanged: EventEmitter<any>;
     newColumnsLoaded: EventEmitter<any>;
     columnPivotModeChanged: EventEmitter<any>;
@@ -302,6 +316,8 @@ export declare class AgGridNg2 implements AfterViewInit {
     cellFocused: EventEmitter<any>;
     rowSelected: EventEmitter<any>;
     selectionChanged: EventEmitter<any>;
+    cellKeyDown: EventEmitter<any>;
+    cellKeyPress: EventEmitter<any>;
     cellMouseOver: EventEmitter<any>;
     cellMouseOut: EventEmitter<any>;
     filterChanged: EventEmitter<any>;
