@@ -19,8 +19,8 @@ export class Ng2CustomComponentWrapper extends BaseComponentWrapper<WrapableInte
       init(params: any): void {
         this._params = params;
         this._componentRef = OriginalConstructor;
-        this._agAwareComponent = this._componentRef;
-        this._frameworkComponentInstance = this._componentRef;
+        this._agAwareComponent = this._componentRef.getEditor();
+        this._frameworkComponentInstance = this._componentRef.getEditor();
         this._eGui = this._componentRef.el.nativeElement;
         this._agAwareComponent.agInit(this._params);
         this._componentRef.cd.detectChanges();

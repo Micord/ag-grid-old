@@ -1,6 +1,6 @@
 {
   "name": "ag-grid-angular",
-  "version": "20.0.0-cg",
+  "version": "20.0.1-cg",
   "description": "ag-Grid Angular Component",
   "main": "main.js",
   "typings": "main.d.ts",
