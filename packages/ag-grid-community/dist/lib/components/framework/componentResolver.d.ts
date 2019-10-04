@@ -1,4 +1,4 @@
-// Type definitions for ag-grid-community v20.0.0-cg
+// Type definitions for ag-grid-community v20.0.1-cg
 // Project: http://www.ag-grid.com/
 // Definitions by: Niall Crosby <https://github.com/ag-grid/>
 import { GridOptions } from "../../entities/gridOptions";
@@ -18,7 +18,7 @@ export declare type AgComponentPropertyInput<A extends IComponent<any>> = AgGrid
 export declare enum ComponentType {
     AG_GRID = 0,
     FRAMEWORK = 1,
-    CUSTOM = 2
+    COLUMN = 2
 }
 export declare enum ComponentSource {
     DEFAULT = 0,
@@ -61,7 +61,7 @@ export declare class ComponentResolver {
     private componentMetadataProvider;
     private componentProvider;
     private frameworkComponentWrapper;
-    private customComponentWrapper;
+    private columnComponentWrapper;
     /**
      * This method returns the underlying representation of the component to be created. ie for Javascript the
      * underlying function where we should be calling new into. In case of the frameworks, the framework class

@@ -1,4 +1,4 @@
-// Type definitions for ag-grid-community v20.0.0-cg
+// Type definitions for ag-grid-community v20.0.1-cg
 // Project: http://www.ag-grid.com/
 // Definitions by: Niall Crosby <https://github.com/ag-grid/>
 import { IEventEmitter } from "../interfaces/iEventEmitter";
