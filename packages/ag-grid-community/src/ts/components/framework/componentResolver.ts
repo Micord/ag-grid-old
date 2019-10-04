@@ -33,7 +33,7 @@ export type ComponentHolder =
 export type AgComponentPropertyInput<A extends IComponent<any>> = AgGridRegisteredComponentInput<A> | string | boolean;
 
 export enum ComponentType {
-    AG_GRID, FRAMEWORK, CUSTOM
+    AG_GRID, FRAMEWORK, COLUMN
 }
 
 export enum ComponentSource {
@@ -90,8 +90,8 @@ export class ComponentResolver {
     @Optional("frameworkComponentWrapper")
     private frameworkComponentWrapper: FrameworkComponentWrapper;
 
-    @Optional("customComponentWrapper")
-    private customComponentWrapper: FrameworkComponentWrapper;
+    @Optional("columnComponentWrapper")
+    private columnComponentWrapper: FrameworkComponentWrapper;
 
     /**
      * This method returns the underlying representation of the component to be created. ie for Javascript the
@@ -128,7 +128,7 @@ export class ComponentResolver {
         let HardcodedJsComponent: { new(): A } = null;
         let hardcodedJsFunction: AgGridComponentFunctionInput = null;
         let HardcodedFwComponent: { new(): B } = null;
-        let HardcodedCustomComponent: { new(): B } = null;
+        let HardcodedColumnComponent: { new(): B } = null;
         let dynamicComponentFn: (params: DynamicComponentParams) => DynamicComponentDef;
 
         if (holder != null) {
@@ -148,7 +148,7 @@ export class ComponentResolver {
                 }
             }
             HardcodedFwComponent = (holder as any)[propertyName + "Framework"];
-            HardcodedCustomComponent = (holder as any)[propertyName + "Custom"];
+            HardcodedColumnComponent = (holder as any)[propertyName + "Column"];
             dynamicComponentFn = (holder as any)[propertyName + "Selector"];
         }
 
@@ -158,10 +158,10 @@ export class ComponentResolver {
          */
 
         if (
-            (HardcodedJsComponent && (HardcodedFwComponent || HardcodedCustomComponent)) ||
-            (hardcodedNameComponent && (HardcodedFwComponent || HardcodedCustomComponent)) ||
-            (hardcodedJsFunction && (HardcodedFwComponent || HardcodedCustomComponent)) ||
-            (HardcodedFwComponent && HardcodedCustomComponent)
+            (HardcodedJsComponent && (HardcodedFwComponent || HardcodedColumnComponent)) ||
+            (hardcodedNameComponent && (HardcodedFwComponent || HardcodedColumnComponent)) ||
+            (hardcodedJsFunction && (HardcodedFwComponent || HardcodedColumnComponent)) ||
+            (HardcodedFwComponent && HardcodedColumnComponent)
         ) {
             throw Error("ag-grid: you are trying to specify: " + propertyName + " twice as a component.");
         }
@@ -170,11 +170,11 @@ export class ComponentResolver {
             throw Error("ag-grid: you are specifying a framework component but you are not using a framework version of ag-grid for : " + propertyName);
         }
 
-        if (HardcodedCustomComponent && !this.customComponentWrapper) {
-            throw Error("ag-grid: you are specifying a custom component but you are not using a framework version of ag-grid for : " + propertyName);
+        if (HardcodedColumnComponent && !this.columnComponentWrapper) {
+            throw Error("ag-grid: you are specifying a column component but you are not using a framework version of ag-grid for : " + propertyName);
         }
 
-        if (dynamicComponentFn && (hardcodedNameComponent || HardcodedJsComponent || hardcodedJsFunction || HardcodedFwComponent || HardcodedCustomComponent)) {
+        if (dynamicComponentFn && (hardcodedNameComponent || HardcodedJsComponent || hardcodedJsFunction || HardcodedFwComponent || HardcodedColumnComponent)) {
             throw Error("ag-grid: you can't specify both, the selector and the component of ag-grid for : " + propertyName);
         }
 
@@ -199,12 +199,12 @@ export class ComponentResolver {
             };
         }
 
-        if (HardcodedCustomComponent) {
+        if (HardcodedColumnComponent) {
             // console.warn(`ag-grid: Since version 12.1.0 specifying a component directly is deprecated, you should register the component by name`);
-            // console.warn(`${HardcodedFwComponent}`);
+            // console.warn(`${HardcodedColumnComponent}`);
             return {
-                type: ComponentType.CUSTOM,
-                component: HardcodedCustomComponent,
+                type: ComponentType.COLUMN,
+                component: HardcodedColumnComponent,
                 source: ComponentSource.HARDCODED,
                 dynamicParams: null
             };
@@ -366,7 +366,7 @@ export class ComponentResolver {
         finalParams.agGridReact = this.context.getBean('agGridReact') ? _.cloneObject(this.context.getBean('agGridReact')) : {};
         // AG-1716 - directly related to AG-1574 and AG-1715
         finalParams.frameworkComponentWrapper = this.context.getBean('frameworkComponentWrapper') ? this.context.getBean('frameworkComponentWrapper') : {};
-        finalParams.customComponentWrapper = this.context.getBean('customComponentWrapper') ? this.context.getBean('customComponentWrapper') : {};
+        finalParams.columnComponentWrapper = this.context.getBean('columnComponentWrapper') ? this.context.getBean('columnComponentWrapper') : {};
 
         const deferredInit: void | Promise<void> = this.initialiseComponent(componentAndParams[0], finalParams, customInitParamsCb);
         if (deferredInit == null) {
@@ -437,14 +437,14 @@ export class ComponentResolver {
             ];
         }
 
-        if (componentToUse.type === ComponentType.CUSTOM) {
+        if (componentToUse.type === ComponentType.COLUMN) {
             //Using custom component
-            const CustomComponentRaw: { new(): B } = componentToUse.component;
+            const ColumnComponentRaw: { new(): B } = componentToUse.component;
 
             const thisComponentConfig: ComponentMetadata = this.componentMetadataProvider.retrieve(
                 propertyName);
             return [
-                this.customComponentWrapper.wrap(CustomComponentRaw,
+                this.columnComponentWrapper.wrap(ColumnComponentRaw,
                                                  thisComponentConfig.mandatoryMethodList,
                                                  thisComponentConfig.optionalMethodList,
                                                  defaultComponentName) as A,

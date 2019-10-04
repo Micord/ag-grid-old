@@ -8,7 +8,7 @@ import {
     IAfterGuiAttachedParams
 } from "ag-grid-community";
 import {BaseComponentFactory} from "./baseComponentFactory";
-import {ICellRendererAngularComp, ICellEditorAngularComp, IFilterAngularComp, AgFrameworkComponent} from "./interfaces";
+import {ICellRendererAngularComp, ICellEditorAngularComp, IColumnAngularComp, IFilterAngularComp, AgFrameworkComponent} from "./interfaces";
 
 @Injectable()
 export class Ng2ComponentFactory extends BaseComponentFactory {

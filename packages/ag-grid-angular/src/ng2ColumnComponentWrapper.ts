@@ -3,8 +3,8 @@ import { BaseComponentWrapper, Bean, FrameworkComponentWrapper, WrapableInterfac
 import { AgFrameworkComponent } from "./interfaces";
 
 @Injectable()
-@Bean("customComponentWrapper")
-export class Ng2CustomComponentWrapper extends BaseComponentWrapper<WrapableInterface> implements FrameworkComponentWrapper {
+@Bean("columnComponentWrapper")
+export class Ng2ColumnComponentWrapper extends BaseComponentWrapper<WrapableInterface> implements FrameworkComponentWrapper {
 
   createWrapper(OriginalConstructor: { new(): any }): WrapableInterface {
 

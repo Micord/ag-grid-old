@@ -44,3 +44,7 @@ export interface INoRowsOverlayAngularComp extends AgFrameworkComponent<INoRowsO
 
 export interface IStatusPanelAngularComp extends AgFrameworkComponent<IStatusPanelParams> {}
 export interface IToolPanelAngularComp extends AgFrameworkComponent<IToolPanelParams> {}
+
+export interface IColumnAngularComp {
+    getEditor(): ICellEditorAngularComp;
+}

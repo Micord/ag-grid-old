@@ -39,7 +39,7 @@
     "@angular/compiler": "^4.4.7",
     "@angular/compiler-cli": "^4.4.7",
     "@angular/core": "^4.4.7",
-    "ag-grid-community": "^20.0.0-cg",
+    "ag-grid-community": "^20.0.1-cg",
     "core-js": "^2.5.7",
     "del": "^3.0.0",
     "gulp": "^3.9.1",

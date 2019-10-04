@@ -28,7 +28,7 @@ import {
 import {Ng2FrameworkFactory} from "./ng2FrameworkFactory";
 import {AgGridColumn} from "./agGridColumn";
 import {Ng2FrameworkComponentWrapper} from "./ng2FrameworkComponentWrapper";
-import {Ng2CustomComponentWrapper} from "./ng2CustomComponentWrapper";
+import {Ng2ColumnComponentWrapper} from "./ng2ColumnComponentWrapper";
 
 @Component({
     selector: 'ag-grid-angular',
@@ -36,7 +36,7 @@ import {Ng2CustomComponentWrapper} from "./ng2CustomComponentWrapper";
     providers: [
         Ng2FrameworkFactory,
         Ng2FrameworkComponentWrapper,
-        Ng2CustomComponentWrapper
+        Ng2ColumnComponentWrapper
     ],
     // tell angular we don't want view encapsulation, we don't want a shadow root
     encapsulation: ViewEncapsulation.None
@@ -66,7 +66,7 @@ export class AgGridNg2 implements AfterViewInit {
                 private viewContainerRef: ViewContainerRef,
                 private ng2FrameworkFactory: Ng2FrameworkFactory,
                 private frameworkComponentWrapper: Ng2FrameworkComponentWrapper,
-                private customComponentWrapper: Ng2CustomComponentWrapper,
+                private columnComponentWrapper: Ng2ColumnComponentWrapper,
                 private _componentFactoryResolver: ComponentFactoryResolver) {
         this._nativeElement = elementDef.nativeElement;
 
@@ -86,7 +86,7 @@ export class AgGridNg2 implements AfterViewInit {
             frameworkFactory: this.ng2FrameworkFactory,
             seedBeanInstances: {
                 frameworkComponentWrapper: this.frameworkComponentWrapper,
-                customComponentWrapper: this.customComponentWrapper
+                columnComponentWrapper: this.columnComponentWrapper
             }
         };
 
