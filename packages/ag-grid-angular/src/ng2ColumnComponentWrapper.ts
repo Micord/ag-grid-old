@@ -13,14 +13,18 @@ export class Ng2ColumnComponentWrapper extends BaseComponentWrapper<WrapableInte
       protected _params: any;
       protected _eGui: HTMLElement;
       protected _componentRef: any;
+      protected _agColumnEditor: any;
       protected _agAwareComponent: AgFrameworkComponent<any>;
       protected _frameworkComponentInstance: any;  // the users component - for accessing methods they create
 
       init(params: any): void {
         this._params = params;
         this._componentRef = OriginalConstructor;
-        this._agAwareComponent = this._componentRef.getEditor();
-        this._frameworkComponentInstance = this._componentRef.getEditor();
+        this._agColumnEditor = this._componentRef["getEditor"]
+                               ? this._componentRef.getEditor()
+                               : this._componentRef;
+        this._agAwareComponent = this._agColumnEditor;
+        this._frameworkComponentInstance = this._agColumnEditor;
         this._eGui = this._componentRef.el.nativeElement;
         this._agAwareComponent.agInit(this._params);
         this._componentRef.cd.detectChanges();

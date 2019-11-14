@@ -38,6 +38,7 @@ export interface ICellEditorAngularComp extends ICellEditor, AgFrameworkComponen
 export interface AgRendererComponent extends ICellRendererAngularComp {}
 export interface AgEditorComponent extends ICellEditorAngularComp {}
 export interface AgFilterComponent extends IFilterAngularComp {}
+export interface AgColumnComponent {getEditor?(): AgEditorComponent;}
 
 export interface ILoadingOverlayAngularComp extends AgFrameworkComponent<ILoadingOverlayParams> {}
 export interface INoRowsOverlayAngularComp extends AgFrameworkComponent<INoRowsOverlayParams> {}
@@ -45,6 +46,3 @@ export interface INoRowsOverlayAngularComp extends AgFrameworkComponent<INoRowsO
 export interface IStatusPanelAngularComp extends AgFrameworkComponent<IStatusPanelParams> {}
 export interface IToolPanelAngularComp extends AgFrameworkComponent<IToolPanelParams> {}
 
-export interface IColumnAngularComp {
-    getEditor(): ICellEditorAngularComp;
-}
