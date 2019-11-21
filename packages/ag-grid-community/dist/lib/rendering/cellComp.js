@@ -1,6 +1,6 @@
 /**
  * ag-grid-community - Advanced Data Grid / Data Table supporting Javascript / React / AngularJS / Web Components
- * @version v20.0.1-cg
+ * @version v20.0.2-cg
  * @link http://www.ag-grid.com/
  * @license MIT
  */
@@ -1451,6 +1451,10 @@ var CellComp = /** @class */ (function (_super) {
             // passed above) and we need to see if the editor wants to accept the new value.
             var userWantsToCancel = this.cellEditor.isCancelAfterEnd && this.cellEditor.isCancelAfterEnd();
             if (!userWantsToCancel) {
+                // if custom popup editor setting value in onBlur event, we need to fire blur events for all elements
+                if (this.cellEditorInPopup) {
+                    this.beans.popupService.blurRecursively();
+                }
                 newValue = this.cellEditor.getValue();
                 newValueExists = true;
             }

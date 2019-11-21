@@ -1,4 +1,4 @@
-// Type definitions for ag-grid-community v20.0.1-cg
+// Type definitions for ag-grid-community v20.0.2-cg
 // Project: http://www.ag-grid.com/
 // Definitions by: Niall Crosby <https://github.com/ag-grid/>
 import { RowNode } from "../entities/rowNode";
@@ -54,4 +54,5 @@ export declare class PopupService {
     addPopup(modal: boolean, eChild: any, closeOnEsc: boolean, closedCallback?: () => void, click?: MouseEvent | Touch | null): (event?: any) => void;
     private isEventFromCurrentPopup;
     private isEventSameChainAsOriginalEvent;
+    blurRecursively(): void;
 }

@@ -1726,6 +1726,10 @@ export class CellComp extends Component {
             // passed above) and we need to see if the editor wants to accept the new value.
             const userWantsToCancel = this.cellEditor.isCancelAfterEnd && this.cellEditor.isCancelAfterEnd();
             if (!userWantsToCancel) {
+                // if custom popup editor setting value in onBlur event, we need to fire blur events for all elements
+                if (this.cellEditorInPopup) {
+                    this.beans.popupService.blurRecursively();
+                }
                 newValue = this.cellEditor.getValue();
                 newValueExists = true;
             }

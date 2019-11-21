@@ -462,4 +462,17 @@ export class PopupService {
 
         return false;
     }
+
+    public blurRecursively(): void {
+        for (let i = 0; i < this.activePopupElements.length; ++i) {
+            let activePopupElement = this.activePopupElements[i];
+            let elements = activePopupElement.getElementsByTagName('*');
+            for (let j = 0; j < elements.length; ++j) {
+                let element: Element = elements[j];
+                if (element instanceof HTMLElement) {
+                    element.blur();
+                }
+            }
+        }
+    }
 }
