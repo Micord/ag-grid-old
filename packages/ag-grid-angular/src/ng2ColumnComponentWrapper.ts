@@ -20,12 +20,10 @@ export class Ng2ColumnComponentWrapper extends BaseComponentWrapper<WrapableInte
       init(params: any): void {
         this._params = params;
         this._componentRef = OriginalConstructor;
-        this._agColumnEditor = this._componentRef["getEditor"]
-                               ? this._componentRef.getEditor()
-                               : this._componentRef;
+        this._agColumnEditor = this._componentRef.getEditor ? this._componentRef.getEditor() : this._componentRef;
         this._agAwareComponent = this._agColumnEditor;
         this._frameworkComponentInstance = this._agColumnEditor;
-        this._eGui = this._componentRef.el.nativeElement;
+        this._eGui = this._agColumnEditor.el.nativeElement;
         this._agAwareComponent.agInit(this._params);
         this._componentRef.cd.detectChanges();
       }
