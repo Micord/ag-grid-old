@@ -40,6 +40,7 @@ export class Utils {
     private static isEdge: boolean;
     private static isChrome: boolean;
     private static isFirefox: boolean;
+    private static scrollbarWidth: number;
 
     private static PRINTABLE_CHARACTERS = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890!"£$%^&*()_+-=[];\'#,./\|<>?:@~{}';
 
@@ -966,28 +967,31 @@ export class Utils {
     }
 
     static getScrollbarWidth() {
-        let outer = document.createElement("div");
-        outer.style.visibility = "hidden";
-        outer.style.width = "100px";
-        outer.style.msOverflowStyle = "scrollbar"; // needed for WinJS apps
+        if (!this.scrollbarWidth) {
+            let outer = document.createElement("div");
+            outer.style.visibility = "hidden";
+            outer.style.width = "100px";
+            outer.style.msOverflowStyle = "scrollbar"; // needed for WinJS apps
 
-        document.body.appendChild(outer);
+            document.body.appendChild(outer);
 
-        let widthNoScroll = outer.offsetWidth;
-        // force scrollbars
-        outer.style.overflow = "scroll";
+            let widthNoScroll = outer.offsetWidth;
+            // force scrollbars
+            outer.style.overflow = "scroll";
 
-        // add innerdiv
-        let inner = document.createElement("div");
-        inner.style.width = "100%";
-        outer.appendChild(inner);
+            // add innerdiv
+            let inner = document.createElement("div");
+            inner.style.width = "100%";
+            outer.appendChild(inner);
 
-        let widthWithScroll = inner.offsetWidth;
+            let widthWithScroll = inner.offsetWidth;
 
-        // remove divs
-        outer.parentNode.removeChild(outer);
+            // remove divs
+            outer.parentNode.removeChild(outer);
 
-        return widthNoScroll - widthWithScroll;
+            this.scrollbarWidth = widthNoScroll - widthWithScroll;
+        }
+        return this.scrollbarWidth;
     }
 
     static isKeyPressed(event: KeyboardEvent, keyToCheck: number) {

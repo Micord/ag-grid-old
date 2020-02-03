@@ -1,6 +1,6 @@
 {
   "name": "ag-grid",
-  "version": "14.2.0",
+  "version": "14.2.0-cg",
   "description": "Advanced Data Grid / Data Table supporting Javascript / React / AngularJS / Web Components",
   "main": "./main.js",
   "scripts": {
@@ -11,6 +11,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/ag-grid/ag-grid.git"
+  },
+  "publishConfig": {
+    "registry": "http://repo.cg.ru/repository/npm-private/"
   },
   "keywords": [
     "web-components",
