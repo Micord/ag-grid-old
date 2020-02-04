@@ -42,6 +42,7 @@ export class Utils {
     private static isEdge: boolean;
     private static isChrome: boolean;
     private static isFirefox: boolean;
+    private static scrollbarWidth: number;
 
     private static isIPad: boolean;
 
@@ -1161,30 +1162,33 @@ export class Utils {
     }
 
     static getScrollbarWidth() {
-        const outer = document.createElement("div");
-        outer.style.visibility = "hidden";
-        outer.style.width = "100px";
-        outer.style.msOverflowStyle = "scrollbar"; // needed for WinJS apps
+        if (!this.scrollbarWidth) {
+            const outer = document.createElement("div");
+            outer.style.visibility = "hidden";
+            outer.style.width = "100px";
+            outer.style.msOverflowStyle = "scrollbar"; // needed for WinJS apps
 
-        document.body.appendChild(outer);
+            document.body.appendChild(outer);
 
-        const widthNoScroll = outer.offsetWidth;
-        // force scrollbars
-        outer.style.overflow = "scroll";
+            const widthNoScroll = outer.offsetWidth;
+            // force scrollbars
+            outer.style.overflow = "scroll";
 
-        // add inner div
-        const inner = document.createElement("div");
-        inner.style.width = "100%";
-        outer.appendChild(inner);
+            // add inner div
+            const inner = document.createElement("div");
+            inner.style.width = "100%";
+            outer.appendChild(inner);
 
-        const widthWithScroll = inner.offsetWidth;
+            const widthWithScroll = inner.offsetWidth;
 
-        // remove divs
-        if (outer.parentNode) {
-            outer.parentNode.removeChild(outer);
+            // remove divs
+            if (outer.parentNode) {
+                outer.parentNode.removeChild(outer);
+            }
+
+            this.scrollbarWidth = widthNoScroll - widthWithScroll;
         }
-
-        return widthNoScroll - widthWithScroll;
+        return this.scrollbarWidth;
     }
 
     static hasOverflowScrolling(): boolean {
