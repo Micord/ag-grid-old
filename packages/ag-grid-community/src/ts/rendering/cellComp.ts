@@ -1204,6 +1204,7 @@ export class CellComp extends Component {
 
         // give user a chance to cancel event processing
         if (this.doesUserWantToCancelKeyboardEvent(event)) {
+            event.stopPropagation(); // don't emit escape event on popup wrapper
             return;
         }
 
