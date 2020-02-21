@@ -1016,6 +1016,10 @@ export class GridApi {
         this.rowRenderer.startEditingCell(gridCell, params.keyPress, params.charPress);
     }
 
+    public refreshCssClasses(): void {
+        this.rowRenderer.refreshCssClasses();
+    }
+
     public addAggFunc(key: string, aggFunc: IAggFunc): void {
         if (this.aggFuncService) {
             this.aggFuncService.addAggFunc(key, aggFunc);

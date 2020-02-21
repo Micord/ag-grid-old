@@ -445,6 +445,10 @@ export class RowComp extends Component {
         return this.fullWidthRow;
     }
 
+    public refreshCssClasses(): void {
+        this.postProcessCss();
+    }
+
     private addListeners(): void {
         this.addDestroyableEventListener(this.rowNode, RowNode.EVENT_HEIGHT_CHANGED, this.onRowHeightChanged.bind(this));
         this.addDestroyableEventListener(this.rowNode, RowNode.EVENT_ROW_SELECTED, this.onRowSelected.bind(this));
