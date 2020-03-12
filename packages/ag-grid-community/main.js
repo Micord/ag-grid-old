@@ -1,6 +1,6 @@
 /**
  * ag-grid-community - Advanced Data Grid / Data Table supporting Javascript / React / AngularJS / Web Components
- * @version v20.0.0-cg.3
+ * @version v20.0.0-cg.4
  * @link http://www.ag-grid.com/
  * @license MIT
  */
@@ -107,6 +107,8 @@ var headerRootComp_1 = require("./dist/lib/headerRendering/headerRootComp");
 exports.HeaderRootComp = headerRootComp_1.HeaderRootComp;
 var headerRowComp_1 = require("./dist/lib/headerRendering/headerRowComp");
 exports.HeaderRowComp = headerRowComp_1.HeaderRowComp;
+var headerComp_1 = require("./dist/lib/headerRendering/header/headerComp");
+exports.HeaderComp = headerComp_1.HeaderComp;
 var horizontalResizeService_1 = require("./dist/lib/headerRendering/horizontalResizeService");
 exports.HorizontalResizeService = horizontalResizeService_1.HorizontalResizeService;
 var moveColumnController_1 = require("./dist/lib/headerRendering/moveColumnController");

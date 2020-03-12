@@ -1,4 +1,4 @@
-// Type definitions for ag-grid-community v20.0.0-cg.3
+// Type definitions for ag-grid-community v20.0.0-cg.4
 // Project: http://www.ag-grid.com/
 // Definitions by: Niall Crosby <https://github.com/ag-grid/>
 export { ColumnFactory } from "./dist/lib/columnController/columnFactory";

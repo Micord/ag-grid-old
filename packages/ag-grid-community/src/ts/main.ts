@@ -281,6 +281,7 @@ export {IDateParams, IDate, IDateComp} from "./rendering/dateComponent";
 export {IAfterGuiAttachedParams, IComponent} from "./interfaces/iComponent";
 export {IFilter, IFilterComp} from "./interfaces/iFilter";
 export {IHeaderParams} from "./headerRendering/header/headerComp";
+export {HeaderComp} from "./headerRendering/header/headerComp";
 export {GetQuickFilterTextParams} from "./entities/colDef";
 export {IHeaderGroupParams, IHeaderGroup} from "./headerRendering/headerGroup/headerGroupComp";
 export {TextAndNumberFilterParameters} from "./filter/textAndNumberFilterParameters";
